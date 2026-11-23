@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ilha do Coqueiro — Recuperação de Ciências 5º ano (3º trimestre)</title>
+<style>
+:root{
+  --mar:#1591A6; --mar-claro:#D9F1F5; --sol:#F2A025; --alerta:#EF6B55;
+  --bom:#2EAF7D; --fundo:#FFFCF4; --papel:#FFFFFF; --tinta:#1F3A42;
+  --cinza:#7B8E95; --borda:#E6DCC6;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',Verdana,sans-serif;background:var(--fundo);color:var(--tinta);font-size:17px;line-height:1.6}
+.wrap{max-width:940px;margin:0 auto;padding:16px}
+header{background:linear-gradient(160deg,#0E7E92,#35B7C4);color:#fff;border-radius:0 0 26px 26px;padding:22px 16px 26px;text-align:center}
+header h1{margin:0 0 6px;font-size:1.6rem}
+header p{margin:4px 0;opacity:.95}
+.coco{font-size:3rem;line-height:1;display:block;margin-bottom:4px}
+.badge{display:inline-block;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.5);padding:4px 14px;border-radius:999px;font-weight:bold;font-size:.9rem;margin-top:8px}
+nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 10px}
+nav button{background:var(--papel);border:3px solid var(--borda);border-radius:16px;padding:10px 14px;font-size:1rem;font-weight:bold;color:var(--tinta);cursor:pointer;font-family:inherit}
+nav button:hover{border-color:var(--mar)}
+nav button.on{background:var(--mar);border-color:var(--mar);color:#fff}
+nav button .mini{display:block;font-size:.72rem;font-weight:normal;opacity:.85}
+section{display:none}
+section.on{display:block}
+.card{background:var(--papel);border:3px solid var(--borda);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 3px 0 rgba(21,145,166,.07)}
+.card h2{margin:0 0 6px;font-size:1.3rem;color:var(--mar)}
+.card h3{margin:14px 0 6px;font-size:1.08rem}
+.intro{background:var(--mar-claro);border-color:#AFE0E8}
+.pill{border:3px solid var(--borda);border-radius:18px;padding:14px;margin:12px 0;background:#fff}
+.pill .tema{font-weight:bold;font-size:1.1rem;color:var(--mar);margin-bottom:4px}
+.pill .regra{margin:6px 0}
+.pill .ex{background:#FFF6E3;border-left:6px solid var(--sol);border-radius:10px;padding:8px 12px;margin:8px 0}
+.pill .prova{background:#E8F7F0;border-left:6px solid var(--bom);border-radius:10px;padding:8px 12px;margin:8px 0}
+.pill .prova b{color:#1C7A56}
+.grupo{font-size:1.15rem;font-weight:bold;background:var(--sol);color:#4A3200;display:inline-block;padding:5px 16px;border-radius:999px;margin:18px 0 2px}
+.q{border-top:2px dashed var(--borda);padding-top:12px;margin-top:12px}
+.q:first-of-type{border-top:0}
+.q .enun{font-weight:bold;margin-bottom:8px}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{text-align:left;background:#fff;border:3px solid var(--borda);border-radius:14px;padding:10px 12px;cursor:pointer;font-family:inherit;font-size:1rem;color:var(--tinta)}
+.opt:hover:enabled{border-color:var(--mar);background:#F1FAFC}
+.opt:disabled{cursor:default;opacity:.95}
+.opt .letra{display:inline-block;font-weight:bold;color:var(--mar);width:24px}
+.opt.certa{background:#E8F7F0;border-color:var(--bom)}
+.opt.errada{background:#FFEDE7;border-color:var(--alerta)}
+.fb{margin-top:8px;border-radius:12px;padding:9px 12px;font-size:.96rem}
+.fb.ok{background:#E8F7F0;border-left:6px solid var(--bom)}
+.fb.no{background:#FFEDE7;border-left:6px solid var(--alerta)}
+.btn{background:var(--mar);color:#fff;border:0;border-radius:14px;padding:12px 20px;font-size:1.02rem;font-weight:bold;cursor:pointer;font-family:inherit;box-shadow:0 3px 0 #0B6878}
+.btn:hover{filter:brightness(1.07)}
+.btn.sol{background:var(--sol);color:#4A3200;box-shadow:0 3px 0 #B77A00}
+.btn.ghost{background:#fff;color:var(--mar);border:3px solid var(--mar);box-shadow:none}
+.center{text-align:center}
+.resultado{display:none;margin-top:16px}
+.resultado.on{display:block}
+.termo-linha{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--borda);padding:8px 0;flex-wrap:wrap}
+.termo-linha .nome{flex:1;min-width:190px;font-weight:bold}
+.tag{font-size:.84rem;font-weight:bold;padding:3px 11px;border-radius:999px;white-space:nowrap}
+.tag.ok{background:#E8F7F0;color:#1C7A56;border:2px solid var(--bom)}
+.tag.at{background:#FFEDE7;color:#B23C17;border:2px solid var(--alerta)}
+.flipgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:12px;margin-top:10px}
+.flip{height:235px;perspective:900px;cursor:pointer}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.v .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:12px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.93rem;border:3px solid;overflow:auto}
+.flip .f{background:#FFF3E0;border-color:var(--alerta);font-weight:bold}
+.flip .b{background:#fff;border-color:var(--bom);transform:rotateY(180deg)}
+.flip .f small{display:block;color:var(--cinza);font-weight:normal;margin-top:6px}
+.radar{background:#FFF6E3;border-color:#F0D79A}
+.radar .frase{font-size:1.18rem;font-weight:bold;margin:10px 0;text-align:center}
+.radar .escolhas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.radar .escolhas button{min-width:120px}
+.placar{font-weight:bold;color:var(--mar);text-align:center;margin-top:10px}
+.barra{background:var(--mar-claro);border-radius:999px;height:16px;overflow:hidden;margin:8px 0}
+.barra div{background:var(--bom);height:100%;width:0;transition:width .4s}
+.nivel{display:inline-block;font-size:.8rem;font-weight:bold;padding:3px 10px;border-radius:999px;margin-left:6px}
+.nivel.f{background:#E8F7F0;color:#1C7A56}
+.nivel.m{background:#FFF6E3;color:#8A6400}
+.nivel.p{background:#FFEDE7;color:#B23C17}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.95rem}
+th,td{border:2px solid var(--borda);padding:7px 9px;text-align:left}
+th{background:var(--mar-claro)}
+.plano li{margin-bottom:6px}
+.pais{background:#F2F6F7;border-color:#CFDDE1}
+.pais input{font-size:1rem;padding:9px 12px;border:3px solid var(--borda);border-radius:12px;font-family:inherit;width:150px}
+.aviso{font-size:.92rem;color:var(--cinza)}
+footer{text-align:center;color:var(--cinza);font-size:.88rem;padding:18px 10px 34px}
+@media(max-width:600px){
+  body{font-size:16px}
+  nav button{padding:8px 10px;font-size:.92rem}
+  header h1{font-size:1.32rem}
+  .flip{height:270px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="coco">🥥</span>
+  <h1>Ilha do Coqueiro</h1>
+  <p><b>Recuperação de Ciências — 5º ano · 3º trimestre</b></p>
+  <p>Colégio Coração Feliz · Phases Ciências 5 — Livro 2</p>
+  <span class="badge">🏝️ Um dia de acampamento para chegar inteiro na prova</span>
+</header>
+
+<div class="wrap">
+
+<nav>
+  <button class="on" data-tab="t1" onclick="aba('t1',this)">🌡️ Termômetro<span class="mini">onde estou?</span></button>
+  <button data-tab="t2" onclick="aba('t2',this)">🥥 Guia da Ilha<span class="mini">entender rápido</span></button>
+  <button data-tab="t3" onclick="aba('t3',this)">🦀 Alerta<span class="mini">pegadinhas</span></button>
+  <button data-tab="t4" onclick="aba('t4',this)">🎯 Treino<span class="mini">nível prova</span></button>
+  <button data-tab="t5" onclick="aba('t5',this)">🏁 Travessia Final<span class="mini">simulado</span></button>
+</nav>
+
+<!-- ================= TERMÔMETRO ================= -->
+<section id="t1" class="on">
+  <div class="card intro">
+    <h2>🌡️ Termômetro — 15 perguntas, uma de cada assunto</h2>
+    <p>Olá, jovem aprendiz! Eu sou o <b>Coquinho</b>, o coco com canudinho que cuida deste acampamento. 🥥</p>
+    <p>Antes de estudar tudo, vamos <b>medir a maré</b>: uma pergunta de cada assunto do trimestre. No fim eu mostro o que já está <b>firme</b> e o que está <b>escorregando</b> — e você começa pelo que escorrega. Assim não se perde tempo com o que já domina.</p>
+    <p class="aviso">Responda sem pesquisar — é só uma medição, errar aqui ajuda.</p>
+  </div>
+  <div class="card" id="termoBox"></div>
+  <div class="card resultado" id="termoRes"></div>
+
+  <div class="card">
+    <h2>🗓️ Plano de um dia</h2>
+    <ol class="plano">
+      <li><b>Agora:</b> Termômetro (8 min) — descubra onde está escorregando.</li>
+      <li><b>Depois:</b> Guia da Ilha (25 min) — leia primeiro as pílulas marcadas com ⚠️.</li>
+      <li><b>Em seguida:</b> Alerta (18 min) — vire os cartões e jogue a Maré Rápida duas vezes.</li>
+      <li><b>Então:</b> Treino (32 min) — exercícios por família, subindo de nível.</li>
+      <li><b>Por último:</b> Travessia Final (22 min) — o simulado de 20 questões.</li>
+    </ol>
+    <p class="aviso">Total: cerca de <b>1 h 45</b>. Se o tempo acabar, o que mais vale a pena é: pílulas ⚠️ → Maré Rápida → Travessia Final.</p>
+  </div>
+</section>
+
+<!-- ================= GUIA DA ILHA ================= -->
+<section id="t2">
+  <div class="card intro">
+    <h2>🥥 Guia da Ilha — o trimestre em pílulas curtas</h2>
+    <p>Cada pílula tem <b>a regra</b>, <b>um exemplo</b> e a caixinha <b>“Como costuma cair na prova”</b>. Se você já fez o Termômetro, os assuntos para estudar primeiro aparecem com <b>⚠️</b>.</p>
+  </div>
+  <div id="guiaBox"></div>
+  <div class="card">
+    <h2>🗂️ De onde veio cada assunto</h2>
+    <table>
+      <tr><th>Assunto</th><th>Unidade do livro</th></tr>
+      <tr><td>Estados físicos da água</td><td>Unidade 7 (p. 8-31)</td></tr>
+      <tr><td>Mudanças de estado</td><td>Unidade 7 (p. 8-31)</td></tr>
+      <tr><td>O ciclo da água</td><td>Unidade 7 (p. 8-31)</td></tr>
+      <tr><td>Importância da água e mudanças climáticas</td><td>Unidade 7 (p. 8-31)</td></tr>
+      <tr><td>Nutrientes e energia dos alimentos</td><td>Unidade 8 (p. 36-55)</td></tr>
+      <tr><td>Conservação, tipos de alimento e distúrbios</td><td>Unidade 8 (p. 36-55)</td></tr>
+      <tr><td>Sistema digestório: tubo e órgãos anexos</td><td>Unidade 9 (p. 61-62)</td></tr>
+      <tr><td>Boca e garganta · engasgo e Heimlich</td><td>Unidade 9 (p. 63 e 69)</td></tr>
+      <tr><td>Estômago, intestinos e absorção</td><td>Unidade 9 (p. 64)</td></tr>
+      <tr><td>Salmonelose e botulismo</td><td>Unidade 9 (p. 65-66)</td></tr>
+      <tr><td>Sistema respiratório e movimentos respiratórios</td><td>Unidade 9 (p. 67-68)</td></tr>
+      <tr><td>Respiração celular e saúde respiratória</td><td>Unidade 9 (p. 70-71)</td></tr>
+      <tr><td>O sangue e os vasos sanguíneos</td><td>Unidade 10 (p. 82-85)</td></tr>
+      <tr><td>O coração e o caminho do sangue</td><td>Unidade 10 (p. 86-88)</td></tr>
+      <tr><td>Rins, filtração e urina</td><td>Unidade 10 (p. 91)</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= ALERTA ================= -->
+<section id="t3">
+  <div class="card intro">
+    <h2>🦀 Alerta da Maré — os erros que mais derrubam nota</h2>
+    <p><b>Clique no cartão</b> para virar e ver como não cair na pegadinha.</p>
+  </div>
+  <div class="card">
+    <div class="flipgrid" id="flipBox"></div>
+  </div>
+
+  <div class="card radar">
+    <h2>🌊 Maré Rápida — treino relâmpago</h2>
+    <p>Boa parte da prova é um par parecido: delgado ou grosso? ureter ou uretra? Aqui aparece a pergunta e você escolhe a certa. São <b>12 rodadas</b> sorteadas de um monte maior e <b>pode repetir quantas vezes quiser</b> — a ordem e as perguntas mudam sempre.</p>
+    <div id="radarBox"></div>
+    <div class="placar" id="radarPlacar"></div>
+    <div class="center" style="margin-top:12px"><button class="btn sol" onclick="radarStart()">🔄 Jogar a Maré Rápida</button></div>
+  </div>
+</section>
+
+<!-- ================= TREINO ================= -->
+<section id="t4">
+  <div class="card intro">
+    <h2>🎯 Treino — por família de assunto</h2>
+    <p>Os 15 assuntos foram juntados em <b>6 famílias</b>. Em cada uma os exercícios sobem de nível: <span class="nivel f">fácil</span> <span class="nivel m">médio</span> <span class="nivel p">nível prova</span>.</p>
+  </div>
+  <div id="treinoBox"></div>
+</section>
+
+<!-- ================= SIMULADO ================= -->
+<section id="t5">
+  <div class="card intro">
+    <h2>🏁 Travessia Final — simulado de 20 questões</h2>
+    <p>Marque uma resposta em cada questão e clique em <b>Enviar travessia</b> no fim. O <b>gabarito comentado só aparece depois de enviar</b> — é assim que vale como treino de verdade.</p>
+    <p class="aviso">Tudo o que está aqui saiu dos dois kits do trimestre (Unidades 7-8 e 9-10).</p>
+  </div>
+  <div class="card" id="simBox"></div>
+  <div class="center" style="margin:16px 0"><button class="btn" id="simBtn" onclick="simEnviar()">✅ Enviar travessia</button></div>
+  <div class="card resultado" id="simRes"></div>
+</section>
+
+<!-- ================= PAIS ================= -->
+<div class="card pais">
+  <h2>👨‍👩‍👧 Relatório dos pais</h2>
+  <p>Digite o código dos pais para ver o resultado de cada parte.</p>
+  <p><input id="codPais" type="text" placeholder="código" autocomplete="off">
+  <button class="btn ghost" onclick="verRelatorio()">Ver relatório</button></p>
+  <div id="relBox"></div>
+  <p class="aviso" style="margin-top:14px">O progresso fica salvo neste navegador. <button class="btn ghost" style="padding:6px 12px;font-size:.9rem" onclick="limparKit()">🧹 Limpar só este kit</button></p>
+</div>
+
+<footer>
+  Ilha do Coqueiro · Recuperação de Ciências 5º ano · 3º trimestre<br>
+  Feito a partir dos kits das Unidades 7-8 (prova de 30/09) e 9-10 (prova de 11/11) · Phases Ciências 5 — Livro 2
+</footer>
+</div>
+
+<script>
+/* ===================== ARMAZENAMENTO ===================== */
+var PFX='cie5_rec3tri_';
+var mem={};
+function carregar(){try{var r=localStorage.getItem(PFX+'dados');if(r)mem=JSON.parse(r)||{};}catch(e){mem=window.__mem||{};}}
+function salvar(){try{localStorage.setItem(PFX+'dados',JSON.stringify(mem));}catch(e){window.__mem=mem;}}
+function limparKit(){
+  try{
+    var apagar=[];
+    for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(PFX)===0)apagar.push(k);}
+    apagar.forEach(function(k){localStorage.removeItem(k);});
+  }catch(e){}
+  mem={};window.__mem={};
+  document.getElementById('relBox').innerHTML='<div class="fb ok">Pronto! Só os dados deste kit foram apagados. Recarregue a página para começar de novo.</div>';
+}
+carregar();
+
+/* ===================== ASSUNTOS ===================== */
+var ASSUNTOS=[
+ {id:'estados',nome:'Os estados físicos da água'},
+ {id:'mudancas',nome:'As mudanças de estado da água'},
+ {id:'ciclo',nome:'O ciclo da água'},
+ {id:'importancia',nome:'A importância da água e as mudanças climáticas'},
+ {id:'nutrientes',nome:'Os nutrientes e a energia dos alimentos'},
+ {id:'alimentos',nome:'Conservação, tipos de alimento e distúrbios'},
+ {id:'digestorio',nome:'O sistema digestório: tubo e órgãos anexos'},
+ {id:'boca',nome:'Boca e garganta: dentição, bolo alimentar e epiglote'},
+ {id:'absorcao',nome:'Estômago, intestinos e absorção'},
+ {id:'doencas',nome:'Salmonelose e botulismo'},
+ {id:'respiratorio',nome:'O sistema respiratório e os movimentos respiratórios'},
+ {id:'celular',nome:'Respiração celular e saúde respiratória'},
+ {id:'sangue',nome:'O sangue e os vasos sanguíneos'},
+ {id:'coracao',nome:'O coração e o caminho do sangue'},
+ {id:'rins',nome:'Os rins, a filtração e a urina'}
+];
+
+/* ===================== TERMÔMETRO ===================== */
+var TERMO=[
+ {as:'estados',q:'A nuvem é formada por...',o:['vapor de água, no estado gasoso','pequenas gotículas de água, no estado líquido','cristais de gelo, no estado sólido','ar puro, sem nenhuma água'],a:1,e:'A nuvem é feita de pequenas gotículas de água — estado LÍQUIDO. O vapor de água é o estado gasoso e é invisível.'},
+ {as:'mudancas',q:'O orvalho que aparece na grama pela manhã se forma por qual mudança de estado?',o:['fusão','solidificação','condensação','ebulição'],a:2,e:'Na condensação, o vapor de água toca uma superfície fria (a grama), esfria e vira líquido: gasoso → líquido.'},
+ {as:'ciclo',q:'A etapa do ciclo em que a água cai das nuvens como chuva, neve ou granizo é a...',o:['precipitação','evaporação','infiltração','condensação'],a:0,e:'Precipitação é a queda da água das nuvens carregadas, em forma de chuva, neve ou granizo.'},
+ {as:'importancia',q:'Numa usina hidrelétrica, a energia elétrica é produzida porque...',o:['o Sol aquece a água até ela virar eletricidade','a chuva cai diretamente sobre as casas','o vento gira as nuvens','a água move as turbinas, que estão ligadas a um gerador'],a:3,e:'A água represada passa pelas turbinas e as faz girar; ligadas a um gerador, elas transformam esse movimento em energia elétrica.'},
+ {as:'nutrientes',q:'Qual nutriente tem como principal função a construção do corpo e o crescimento?',o:['os carboidratos','as proteínas','os lipídeos','as vitaminas'],a:1,e:'As proteínas (carnes, leite, ovos, feijão, soja, peixe, queijos) participam da construção do corpo e do crescimento.'},
+ {as:'alimentos',q:'Refrigerantes, salgadinhos de pacote e bolachas recheadas são alimentos...',o:['in natura, que devem ser a base da alimentação','minimamente processados','ultraprocessados, que devem ser evitados','sem nenhum tipo de processamento'],a:2,e:'São ultraprocessados: têm substâncias químicas artificiais e muitas calorias. O livro diz para evitá-los.'},
+ {as:'digestorio',q:'Qual lista traz SOMENTE órgãos anexos do sistema digestório?',o:['glândulas salivares, pâncreas, fígado e vesícula biliar','boca, faringe, esôfago e estômago','traqueia, brônquios e pulmões','rins, ureteres e bexiga urinária'],a:0,e:'Os órgãos anexos produzem substâncias liberadas no tubo digestório — o alimento NÃO passa por eles.'},
+ {as:'boca',q:'Qual é a função da epiglote?',o:['triturar o alimento junto com os dentes','produzir a saliva que umedece o alimento','empurrar o bolo alimentar até a faringe','fechar a laringe quando engolimos'],a:3,e:'A epiglote é a válvula acima da laringe: ela fecha a laringe na deglutição e impede que o alimento vá para o sistema respiratório.'},
+ {as:'absorcao',q:'A bile é produzida por qual órgão e atua sobre o quê?',o:['pelo pâncreas, sobre as proteínas','pelo fígado, sobre as gorduras','pelo estômago, sobre os carboidratos','pela vesícula biliar, sobre a água'],a:1,e:'Bile = fígado = gorduras. Guarde essa trinca: ela cai sempre.'},
+ {as:'doencas',q:'A ingestão de ovos e carne de frango crus ou malcozidos pode transmitir...',o:['botulismo','gripe','salmonelose','anemia'],a:2,e:'A salmonelose é provocada pelas bactérias Salmonella, com fortes dores abdominais e febre.'},
+ {as:'respiratorio',q:'Em qual estrutura o gás oxigênio do ar passa para o sangue?',o:['na traqueia','nos alvéolos pulmonares','nas cavidades nasais','no diafragma'],a:1,e:'As trocas gasosas acontecem nos alvéolos pulmonares, que são envoltos por vasos sanguíneos muito finos.'},
+ {as:'celular',q:'Na respiração celular, as células usam o gás oxigênio para...',o:['transformar os nutrientes em energia, produzindo também gás carbônico','encher os pulmões de ar','formar as fezes no intestino grosso','filtrar o sangue e produzir urina'],a:0,e:'A respiração celular acontece DENTRO das células: nutrientes + gás oxigênio = energia + gás carbônico.'},
+ {as:'sangue',q:'Que componente do sangue atua na coagulação, quando um vaso se rompe?',o:['o plasma','os glóbulos vermelhos','as plaquetas','os glóbulos brancos'],a:2,e:'As plaquetas são fragmentos celulares que atuam na coagulação sanguínea e estancam o sangramento.'},
+ {as:'coracao',q:'As cavidades do coração que impulsionam o sangue pelas artérias são...',o:['os átrios, de paredes mais finas','as valvas, que abrem e fecham','os alvéolos, que ficam dentro do coração','os ventrículos, de paredes grossas'],a:3,e:'Ventrículo impulsiona (parede grossa); átrio recebe o sangue das veias (parede mais fina).'},
+ {as:'rins',q:'Qual é o caminho correto da urina?',o:['rins → ureteres → bexiga urinária → uretra','rins → uretra → ureteres → bexiga urinária','bexiga urinária → rins → ureteres → uretra','intestinos → ureteres → bexiga urinária → uretra'],a:0,e:'A urina se forma nos rins, segue pelos ureteres até a bexiga urinária e sai pela uretra. Cuidado para não trocar ureter com uretra!'}
+];
+
+/* ===================== GUIA (pílulas) ===================== */
+var GUIA=[
+ {g:'💧 A água — Unidade 7'},
+ {as:'estados',em:'🧊',t:'Os estados físicos da água',
+  r:'Grande parte da superfície da Terra é coberta por água, que aparece em <b>três estados</b>. <b>Líquido:</b> oceanos, mares, rios, lagos, lençóis freáticos e aquíferos — e também as <b>nuvens</b> (pequenas gotículas) e o corpo dos seres vivos. <b>Gasoso:</b> o <b>vapor de água</b> no ar que respiramos, que é <b>invisível</b> como os outros gases. <b>Sólido:</b> neve (cristais de gelo), granizo (pedaços de gelo formados nas nuvens), geleiras (neve compactada), icebergs (pedaços que se desprendem das geleiras) e banquisas (água do mar congelada).',
+  ex:'nuvem = <b>líquido</b> · vapor no ar = <b>gasoso</b> · iceberg, banquisa e granizo = <b>sólido</b>',
+  p:'A pergunta clássica é “em que estado está a água da nuvem?”. A resposta é <b>líquido</b>. Também perguntam o que é banquisa (água do mar congelada) e iceberg (pedaço que se soltou da geleira).'},
+ {as:'mudancas',em:'🔄',t:'As mudanças de estado da água',
+  r:'A água muda de estado quando é <b>aquecida</b> ou <b>resfriada</b>. <b>Solidificação:</b> líquido → sólido (resfriando, forma o gelo). <b>Fusão:</b> sólido → líquido (aquecendo, o gelo derrete). <b>Vaporização:</b> líquido → gasoso — na <b>evaporação</b> isso é <b>lento</b>; na <b>ebulição</b> é <b>rápido</b>, com aquecimento e formação de <b>bolhas</b>. <b>Condensação</b> (ou liquefação): gasoso → líquido, por resfriamento — é o que forma o <b>orvalho</b>.',
+  ex:'gelo derretendo = <b>fusão</b> · água virando gelo = <b>solidificação</b> · orvalho na grama = <b>condensação</b> · água fervendo com bolhas = <b>ebulição</b>',
+  p:'A prova dá a situação e pede o nome. O truque é olhar <b>de onde para onde</b> a água foi e se <b>esquentou ou esfriou</b>. Não troque condensação (gás→líquido) com solidificação (líquido→gelo).'},
+ {as:'ciclo',em:'🌧️',t:'O ciclo da água',
+  r:'A quantidade de água na natureza <b>não varia</b>: ela só passa de um estado para outro, formando o <b>ciclo da água</b> (ou <b>ciclo hidrológico</b>). As etapas: <b>1) Evaporação</b> — a água dos oceanos, mares, rios e do solo é aquecida pelo Sol e vira vapor. <b>2) Transpiração</b> — as plantas absorvem água do solo e devolvem parte dela ao ar (evaporação + transpiração = <b>evapotranspiração</b>). <b>3) Condensação</b> — o vapor sobe, encontra camadas frias da atmosfera e forma as <b>nuvens</b>. <b>4) Precipitação</b> — as nuvens carregadas soltam a água como chuva, neve ou granizo. <b>5) Infiltração</b> — parte da água entra no solo e forma os reservatórios subterrâneos. <b>6) Escoamento</b> — outra parte escoa pela superfície e volta aos rios e oceanos, recomeçando o ciclo.',
+  ex:'Sol aquece o mar → vapor sobe → esfria lá em cima → vira nuvem → chove → parte entra no solo, parte volta ao rio.',
+  p:'Cai a <b>ordem das etapas</b>, o significado de <b>evapotranspiração</b> e a frase “a quantidade de água na natureza <b>não muda</b>”. Decore a palavra <b>ciclo hidrológico</b> — é o outro nome do ciclo da água.'},
+ {as:'importancia',em:'🌍',t:'A importância da água e as mudanças climáticas',
+  r:'<b>Clima:</b> o ciclo regula a umidade do ar e as chuvas. As plantas devolvem água ao ar pela transpiração — por isso o <b>desmatamento diminui as chuvas</b>. Os <b>“rios voadores”</b> são grandes quantidades de vapor de água que viajam pela atmosfera. <b>Abastecimento e agricultura:</b> criam-se <b>reservatórios</b> (barragens) para guardar água; a <b>irrigação</b> das plantações consome muita água doce. <b>Energia:</b> nas <b>usinas hidrelétricas</b> a água represada passa pelas <b>turbinas</b> e as faz girar; ligadas a um <b>gerador</b>, elas produzem energia elétrica — em secas, a produção cai. <b>Mudanças climáticas:</b> a intensificação do <b>efeito estufa</b> (gases como o gás carbônico e o metano) causa o <b>aquecimento global</b>, com mais evaporação, derretimento das geleiras, secas e tempestades.',
+  ex:'Menos floresta → menos transpiração → menos chuva. · Água girando turbina + gerador → energia elétrica.',
+  p:'Cai “como o desmatamento afeta as chuvas”, “como a hidrelétrica produz energia” (turbina + gerador) e “qual é a causa das mudanças climáticas” (intensificação do efeito estufa).'},
+
+ {g:'🍎 Os alimentos — Unidade 8'},
+ {as:'nutrientes',em:'🥗',t:'Os nutrientes e a energia dos alimentos',
+  r:'<b>Carboidratos</b> — fornecem a <b>energia</b> do dia a dia (frutas, pães, arroz, batata, mandioca, macarrão, mel, açúcares). <b>Lipídeos</b> — <b>reserva</b> de energia, ajudam na temperatura do corpo e formam estruturas (óleos, azeites, abacate, amendoim, castanhas, manteiga). <b>Proteínas</b> — <b>construção</b> do corpo e crescimento (carnes, leite, ovos, feijão, soja, peixe, queijos). <b>Vitaminas</b> — <b>reguladoras</b> das funções do corpo (A, C e D). <b>Sais minerais</b> — também reguladores: <b>sódio</b> (sal) e <b>potássio</b> (banana) regulam a água do corpo; <b>ferro</b> (carnes, feijão) previne a <b>anemia</b>; <b>cálcio</b> e <b>fósforo</b> (derivados do leite) formam <b>ossos e dentes</b>. A energia é medida em <b>calorias</b> (cal) ou <b>quilocalorias</b> (kcal): carboidratos e proteínas dão <b>4 kcal/g</b>; lipídeos dão <b>9 kcal/g</b>.',
+  ex:'carboidrato = <b>energia</b> · proteína = <b>construção</b> · lipídeo = <b>reserva</b> (e o mais calórico: 9 kcal/g)',
+  p:'A prova dá o alimento e pede o nutriente, ou dá a função e pede qual é. Decore também os pares: ferro→anemia, cálcio e fósforo→ossos e dentes, sódio e potássio→água do corpo.'},
+ {as:'alimentos',em:'❄️',t:'Conservação, tipos de alimento e distúrbios',
+  r:'<b>Conservação:</b> pelo <b>calor</b> (pasteurização e ultrapasteurização do leite); pelo <b>frio</b> (refrigeração de <b>0 °C a 8 °C</b>; congelamento <b>abaixo de 0 °C</b>) — o frio reduz a ação dos microrganismos; por <b>desidratação</b> (secagem ou salga), que <b>retira a água</b>; e por <b>aditivos</b> (conservantes). Os <b>rótulos</b> trazem a tabela nutricional, a lista de ingredientes (do que tem mais para o que tem menos) e selo de advertência quando há excesso de açúcar, sódio ou gorduras. <b>Tipos:</b> <b>in natura e minimamente processados</b> = base da alimentação · <b>processados</b> = com moderação · <b>ultraprocessados</b> = evitar. <b>Distúrbios:</b> <b>obesidade</b> = acúmulo excessivo de gordura (excesso de calorias + falta de atividade física); <b>desnutrição</b> = o corpo não recebe calorias e nutrientes suficientes — e uma pessoa <b>obesa também pode estar desnutrida</b>, se comer muita caloria e poucos nutrientes.',
+  ex:'Leite pasteurizado = conservação pelo <b>calor</b>. · Carne-seca = <b>desidratação/salga</b>. · Comeu mais calorias do que gastou = aumenta a massa corporal; comeu menos = emagrece.',
+  p:'Cai “por que a geladeira conserva” (reduz a ação dos microrganismos), “por que a salga conserva” (tira a água) e a pegadinha “um obeso pode estar desnutrido?” — <b>pode sim</b>.'},
+
+ {g:'🍽️ A digestão — Unidade 9'},
+ {as:'digestorio',em:'🗺️',t:'O sistema digestório: tubo e órgãos anexos',
+  r:'A <b>nutrição</b> é o conjunto de processos pelos quais o organismo <b>adquire e utiliza os nutrientes</b>, <b>eliminando o que não é útil</b>. Dois sistemas são responsáveis por ela: o <b>digestório</b> e o <b>respiratório</b>. O sistema digestório tem duas partes: o <b>tubo digestório</b> (por onde o alimento passa, nesta ordem): <b>boca · faringe · esôfago · estômago · intestino delgado · intestino grosso · ânus</b>; e os <b>órgãos anexos</b> (o alimento <b>não</b> passa por eles — eles produzem substâncias liberadas no tubo): <b>glândulas salivares · pâncreas · fígado · vesícula biliar</b>. A digestão <b>começa na boca</b> e <b>termina no intestino grosso</b>. O <b>movimento peristáltico</b> é o movimento dos músculos das paredes do esôfago, do estômago e dos intestinos, que <b>empurra o alimento</b> e ajuda a <b>misturar</b> as substâncias digestivas a ele.',
+  ex:'Tubo = a <b>estrada</b>. Órgãos anexos = as <b>fábricas</b> ao lado da estrada.',
+  p:'A questão mais comum é “qual alternativa lista SOMENTE órgãos do tubo digestório?”. Elimine sempre traqueia, laringe, brônquios e pulmões (respiratório) e fígado, pâncreas, glândulas salivares e vesícula (anexos).'},
+ {as:'boca',em:'🦷',t:'Boca e garganta: dentição, bolo alimentar, epiglote e engasgo',
+  r:'A <b>ingestão</b> começa na boca, com a <b>mastigação</b> (os dentes trituram) e a <b>deglutição</b> (engolir). A <b>dentição</b> muda: o recém-nascido não tem dentes; por volta dos <b>3 anos</b> a primeira dentição (<b>decídua</b>) está completa; por volta dos <b>7 anos</b> começa a troca pela <b>permanente</b>, e aí existe por um tempo a <b>dentição mista</b> (os dois tipos juntos); por volta dos <b>12 anos</b> a permanente está quase completa. A <b>saliva</b> umedece e contém substâncias que quebram alguns nutrientes; o alimento triturado e umedecido vira o <b>bolo alimentar</b>. A <b>língua</b> empurra o bolo para a <b>faringe</b>, que se comunica com o <b>esôfago</b> e com a <b>laringe</b>. A <b>epiglote</b> é a válvula que <b>fecha a laringe quando engolimos</b>. Se esse fechamento falha, ocorre o <b>engasgo</b>, e a <b>tosse</b> ajuda a expelir o alimento. Quando a pessoa não consegue respirar nem tossir, usa-se a <b>manobra de Heimlich</b>: o socorrista fica atrás, com uma mão fechada e a outra segurando-a, e comprime o abdome <b>para trás e para cima</b>, um pouco <b>acima do umbigo</b> — o objetivo é <b>replicar o movimento do diafragma</b> e forçar a saída do ar. Chame sempre um adulto responsável; se não houver reação, ligue para o <b>SAMU (192)</b> ou os <b>bombeiros (193)</b>.',
+  ex:'Criança de 9 anos com dente de leite e dente permanente ao mesmo tempo = <b>dentição mista</b>.',
+  p:'Cai muito: a <b>função da epiglote</b>, o que é o <b>bolo alimentar</b>, o nome da <b>dentição mista</b>, o <b>objetivo</b> da manobra de Heimlich e os números <b>192</b> e <b>193</b>.'},
+ {as:'absorcao',em:'⚗️',t:'Estômago, intestinos e absorção',
+  r:'Cada parte do tubo faz um trabalho: na <b>boca</b>, a <b>saliva</b> atua na quebra dos <b>carboidratos</b>; no <b>estômago</b>, a parede produz substâncias que começam a digerir as <b>proteínas</b>; no <b>intestino delgado</b>, o alimento recebe substâncias do <b>fígado</b>, do <b>pâncreas</b> e do próprio intestino, <b>completando a digestão</b> — a <b>bile</b>, produzida pelo <b>fígado</b>, atua na digestão das <b>gorduras</b>. No fim forma-se uma <b>pasta</b> de nutrientes digeridos, água e restos não digeridos. A <b>absorção</b> dos nutrientes e de parte da água acontece no <b>intestino delgado</b>, pelas <b>células da parede</b>, e os nutrientes <b>passam para o sangue</b>. A parede interna do delgado é cheia de <b>dobras (pregas)</b>, que <b>aumentam a superfície</b> de contato e tornam a absorção <b>mais eficiente</b>. O que não foi absorvido nem digerido vai para o <b>intestino grosso</b>, onde continua a <b>absorção de água</b> e ocorre a <b>formação das fezes</b>, encaminhadas ao <b>ânus</b>.',
+  ex:'carboidrato começa na <b>boca</b> · proteína começa no <b>estômago</b> · gordura é digerida no <b>intestino delgado</b>, pela bile do fígado',
+  p:'A prova adora: “qual órgão produz a bile e sobre o que ela age?” (fígado / gorduras), “onde começa a digestão das proteínas?” (estômago) e “para que servem as dobras?” (aumentar a superfície, melhorando a absorção).'},
+ {as:'doencas',em:'🥫',t:'Salmonelose e botulismo',
+  r:'Para a <b>saúde do sistema digestório</b>: dieta saudável e pouco processada, com diversidade de nutrientes; evitar excesso de sal e açúcar; <b>higiene</b> no preparo e <b>conservação</b> adequada no armazenamento. <b>Salmonelose</b> — provocada pelas bactérias <b>Salmonella</b>, transmitidas pela ingestão de <b>ovos e carne de frango crus ou malcozidos</b>. Sintomas: fortes <b>dores abdominais</b> e <b>febre</b>. Prevenção: <b>cozimento adequado</b> e <b>lavar bem as mãos e os utensílios</b>. <b>Botulismo</b> — causado pela ingestão de alimentos contaminados por uma <b>toxina</b> da bactéria <b>Clostridium botulinum</b>, mais comum em <b>conservas vegetais</b> (palmito, picles), principalmente <b>artesanais</b>. Sintomas: náuseas, vômitos, <b>visão turva</b> e dificuldade de engolir; sem tratamento, pode levar à morte. Prevenção: não consumir lata <b>enferrujada, furada ou vencida</b>; higiene rigorosa nas conservas caseiras; <b>ferver</b> enlatados de origem não confiável; guardar o <b>mel</b> em recipiente limpo abaixo de <b>15 °C</b> e <b>não oferecer mel a crianças com menos de 1 ano</b>.',
+  ex:'Maionese caseira com <b>ovo cru</b> → risco de <b>salmonelose</b>. · Palmito de conserva artesanal → risco de <b>botulismo</b>.',
+  p:'A prova descreve um caso e pede a doença. A pista é o <b>alimento</b>: ovo/frango cru = salmonelose; conserva/enlatado = botulismo. Repare que o botulismo vem de uma <b>toxina</b>, e não da bactéria em si.'},
+
+ {g:'🌬️ A respiração — Unidade 9'},
+ {as:'respiratorio',em:'💨',t:'O sistema respiratório e os movimentos respiratórios',
+  r:'O sistema respiratório é formado pelas <b>vias respiratórias</b> — <b>cavidades nasais · faringe · laringe · traqueia · brônquios</b> — e pelos <b>pulmões</b>, órgãos de textura <b>esponjosa</b> formados pelos <b>alvéolos pulmonares</b>, pequenos sacos arredondados envoltos por <b>vasos sanguíneos muito finos</b>. É nos <b>alvéolos</b> que acontecem as <b>trocas gasosas</b>: o gás <b>oxigênio</b> do ar passa para o <b>sangue</b> e o gás <b>carbônico</b> do sangue passa para o <b>ar</b>. Os pulmões são protegidos pelas <b>costelas</b>; entre elas estão os <b>músculos intercostais</b> e, abaixo dos pulmões, o <b>diafragma</b>, músculo que <b>separa o tórax do abdome</b>. <b>Inspiração:</b> os músculos intercostais e o diafragma se <b>contraem</b>, a caixa torácica <b>aumenta</b> de volume e os pulmões se enchem de ar. <b>Expiração:</b> eles <b>relaxam</b>, a caixa torácica <b>diminui</b> e o ar é expulso.',
+  ex:'Na experiência do livro, com a fita métrica ao redor do tronco, o tórax fica <b>maior durante a inspiração</b>.',
+  p:'Cai a <b>ordem do caminho do ar</b> (cuidado: faringe e laringe vêm ANTES da traqueia), onde acontecem as trocas gasosas (<b>alvéolos</b>, nunca a traqueia) e o que acontece na inspiração (<b>contrai e aumenta</b>).'},
+ {as:'celular',em:'⚡',t:'Respiração celular e saúde respiratória',
+  r:'A <b>respiração pulmonar</b> (ou <b>ventilação pulmonar</b>) é o ar entrando e saindo dos pulmões. A <b>respiração celular</b> ocorre <b>dentro das células</b>: elas usam o gás <b>oxigênio</b> para transformar os <b>nutrientes</b> em <b>energia</b>, produzindo também <b>gás carbônico</b>, que volta pelo sangue e sai na <b>expiração</b>. Por isso o gás oxigênio é essencial à vida. <b>Saúde:</b> o sistema respiratório sofre com o <b>ar poluído</b> e com microrganismos. A <b>gripe</b> é causada por variações do <b>vírus influenza</b>, é muito contagiosa (pelo ar e principalmente pelo <b>contato físico</b>), dá <b>febre</b>, dor de cabeça, dores musculares e tosse, e tem <b>vacina</b>. O <b>resfriado</b> é causado por vírus de muitos tipos e tem sintomas <b>mais brandos</b>: <b>coriza</b>, dor de garganta e tosse. <b>Prevenção:</b> evitar locais pouco ventilados e com aglomeração, espirrar com o <b>braço</b> na frente da boca (assim as mãos não se contaminam) e lavar as mãos com frequência. A <b>poluição</b> irrita as vias respiratórias e os pulmões, podendo causar inflamações — combate-se com <b>combustíveis menos poluentes</b> e mais <b>arborização</b>, porque as <b>árvores filtram partículas</b> do ar. A <b>máscara facial</b> evita transmitir e se contaminar. A <b>covid-19</b> causou uma pandemia entre <b>2019 e 2023</b> e é prevenida pelas <b>mesmas medidas</b> da gripe.',
+  ex:'Nutrientes + gás oxigênio → <b>energia</b> + gás carbônico (dentro da célula).',
+  p:'Perguntam a <b>diferença</b> entre respiração pulmonar e celular, quem causa a gripe (<b>vírus influenza</b>) e por que se espirra no <b>braço</b> e não na mão. Cuidado com a troca: quem é <b>usado</b> é o gás oxigênio; o gás carbônico é <b>resíduo</b>.'},
+
+ {g:'❤️ Circulação e excreção — Unidade 10'},
+ {as:'sangue',em:'🩸',t:'O sangue e os vasos sanguíneos',
+  r:'Na <b>circulação</b>, o sangue <b>sai do coração</b>, percorre os órgãos e <b>volta ao coração</b>, levando <b>nutrientes</b> e gás <b>oxigênio</b> às células e encaminhando os <b>resíduos</b> para fora do corpo. O <b>sistema cardiovascular</b> é formado por <b>sangue · coração · vasos sanguíneos</b>. No <b>sangue</b>: <b>plasma</b> — líquido <b>amarelado</b>, formado principalmente por <b>água</b>, com nutrientes e gás carbônico dissolvidos; <b>glóbulos vermelhos</b> (<b>hemácias</b>) — dão a cor vermelha e <b>transportam o gás oxigênio</b>; <b>glóbulos brancos</b> (<b>leucócitos</b>) — <b>defendem</b> o organismo contra bactérias e vírus; <b>plaquetas</b> — fragmentos celulares que atuam na <b>coagulação</b>, estancando o sangramento quando um vaso se rompe. <b>Vasos:</b> <b>artérias</b> levam o sangue <b>do coração para o corpo</b> e se ramificam até formar os capilares; <b>capilares</b> são os mais <b>finos</b>, de paredes finas, e depois se juntam formando as veias; <b>veias</b> levam o sangue <b>de volta ao coração</b> e têm <b>valvas</b>. A <b>doação de sangue</b> salva quem sofre acidentes ou passa por cirurgias e precisa de <b>transfusão</b>.',
+  ex:'Joelho ralado que para de sangrar sozinho = trabalho das <b>plaquetas</b>.',
+  p:'A prova faz associação: plasma → líquido; hemácias → gás oxigênio; leucócitos → defesa; plaquetas → coagulação. E cobra “artéria sai, veia volta (com valvas), capilar é fininho”.'},
+ {as:'coracao',em:'💓',t:'O coração e o caminho do sangue',
+  r:'O <b>coração</b> é um órgão formado por <b>músculo</b>, no <b>centro do tórax, entre os pulmões</b>. Tem <b>quatro cavidades</b> (câmaras): duas <b>superiores</b>, os <b>átrios</b>, de paredes <b>mais finas</b>, que <b>recebem</b> o sangue trazido pelas <b>veias</b>; e duas <b>inferiores</b>, os <b>ventrículos</b>, de paredes <b>grossas</b>, que <b>impulsionam</b> o sangue pelas <b>artérias</b>. Entre átrio e ventrículo há <b>valvas</b>, que abrem e fecham controlando o fluxo. O músculo se contrai e relaxa: são os <b>batimentos cardíacos</b> (ou <b>pulsação</b>) — cerca de <b>70 por minuto</b> num adulto em repouso, sentidos nas têmporas, na lateral do pescoço ou no punho. <b>O caminho do sangue:</b> sai do coração por uma <b>artéria</b> → vira <b>capilares</b> nos órgãos, que entregam gás oxigênio e nutrientes e recolhem gás carbônico e resíduos → o sangue segue pelas <b>veias</b> de volta ao <b>coração</b>, rico em gás carbônico → é impulsionado aos <b>pulmões</b>, onde elimina o gás carbônico e absorve gás oxigênio → volta ao <b>coração</b> e é mandado para todo o corpo.',
+  ex:'Nas ilustrações do livro: vaso <b>azul</b> = sangue rico em gás <b>carbônico</b>; vaso <b>vermelho</b> = sangue rico em gás <b>oxigênio</b>.',
+  p:'Decore “<b>átrio recebe, ventrículo impulsiona</b>”, o número <b>70 batimentos por minuto</b> em repouso e a convenção das cores azul/vermelho (que é só das ilustrações — o sangue não é azul de verdade).'},
+ {as:'rins',em:'💧',t:'Os rins, a filtração e a urina',
+  r:'Durante a circulação, o sangue é levado aos <b>rins</b>, onde é <b>filtrado</b>. Na <b>filtração</b>, alguns <b>sais minerais</b>, a <b>água em excesso</b>, <b>resíduos tóxicos</b> — como a <b>ureia</b> — e outras substâncias são retirados do sangue e se combinam, formando a <b>urina</b>. O sangue filtrado volta ao coração e é distribuído ao corpo. <b>Caminho da urina:</b> ela sai dos <b>rins</b>, segue pelos <b>ureteres</b> até a <b>bexiga urinária</b>, onde é <b>armazenada</b> (a bexiga aumenta de volume), e sai pela <b>uretra</b> para o exterior. Os rins também <b>controlam a água</b> do corpo: bebendo <b>bastante água</b>, elimina-se mais água e a urina fica <b>diluída e clara</b>; bebendo <b>pouca água</b>, os rins retiram menos água do sangue e a urina fica <b>concentrada e amarelo-escura</b>.',
+  ex:'<b>Ureter</b> = do rim até a bexiga (são dois). <b>Uretra</b> = da bexiga para fora (é uma).',
+  p:'Cai o <b>caminho completo</b> da urina e a explicação da <b>cor</b> da urina. Também perguntam o que é retirado do sangue na filtração — e a resposta inclui a <b>ureia</b>, nunca os glóbulos.'},
+
+ {em:'🔗',t:'Para fechar: a grande ligação entre os quatro sistemas',
+  r:'A <b>nutrição</b> depende do sistema <b>digestório</b> (que traz os <b>nutrientes</b>) e do <b>respiratório</b> (que traz o gás <b>oxigênio</b>). Quem <b>leva os dois até cada célula</b> é o sistema <b>cardiovascular</b>, e quem <b>tira os resíduos</b> do sangue é o sistema <b>urinário</b>, com os rins. O caminho inteiro: a digestão quebra o alimento → o <b>intestino delgado</b> absorve os nutrientes → eles entram no <b>sangue</b> → os <b>capilares</b> entregam nas células; a inspiração traz o ar → os <b>alvéolos</b> fazem a troca → as <b>hemácias</b> levam o gás oxigênio às células; dentro da célula, a <b>respiração celular</b> junta nutriente + gás oxigênio e produz <b>energia</b> + gás carbônico; o gás carbônico volta pelo sangue e sai nos <b>pulmões</b>, os resíduos como a <b>ureia</b> saem pelos <b>rins</b> na urina, e o que não foi digerido sai pelo <b>ânus</b> nas fezes.',
+  ex:'Por isso a <b>anemia</b> (menos hemácias) causa <b>cansaço</b>: com menos transporte de gás oxigênio, as células produzem menos energia.',
+  p:'A prova costuma trazer a frase “o sistema respiratório não tem relação com a nutrição” e pedir para corrigir. A resposta é: <b>tem sim</b> — o gás oxigênio que ele traz é usado dentro das células para transformar os nutrientes em energia.'}
+];
+
+/* ===================== PEGADINHAS ===================== */
+var PEGADINHAS=[
+ {f:'Nuvem × vapor de água',b:'<b>Nuvem</b> = gotículas de água, estado <b>líquido</b>. <b>Vapor de água</b> = estado <b>gasoso</b> e <b>invisível</b>.'},
+ {f:'Condensação × solidificação × fusão',b:'<b>Condensação</b>: gás → líquido (orvalho). <b>Solidificação</b>: líquido → gelo. <b>Fusão</b>: gelo → líquido. Esfria nas duas primeiras; esquenta na fusão.'},
+ {f:'Evaporação × ebulição',b:'As duas são <b>vaporização</b>. <b>Evaporação</b> = lenta. <b>Ebulição</b> = rápida, com aquecimento e <b>bolhas</b>.'},
+ {f:'“A chuva cria água nova”',b:'Errado: a quantidade total de água na natureza <b>não muda</b> — ela só passa de um estado para outro. E o <b>desmatamento diminui as chuvas</b>, porque reduz a transpiração das plantas.'},
+ {f:'Carboidrato, proteína ou lipídeo?',b:'<b>Carboidrato</b> = energia do dia a dia (4 kcal/g). <b>Proteína</b> = construção e crescimento (4 kcal/g). <b>Lipídeo</b> = reserva de energia (<b>9 kcal/g</b>, o mais calórico).'},
+ {f:'“Quem é obeso não pode estar desnutrido”',b:'Pode sim! Basta comer alimentos muito <b>calóricos</b> mas <b>pobres em nutrientes</b>.'},
+ {f:'Tubo digestório × órgãos anexos',b:'O alimento passa só pelo <b>tubo</b>: boca, faringe, esôfago, estômago, intestinos, ânus. Os <b>anexos</b> (glândulas salivares, pâncreas, fígado e vesícula) só liberam substâncias nele.'},
+ {f:'Quem produz a bile e sobre o que ela age?',b:'A bile é produzida pelo <b>FÍGADO</b> e atua na digestão das <b>GORDURAS</b>. Não é do pâncreas e não age nas proteínas.'},
+ {f:'Onde começa a digestão de cada nutriente?',b:'<b>Carboidratos</b>: na boca, pela saliva. <b>Proteínas</b>: no estômago. <b>Gorduras</b>: no intestino delgado, pela bile.'},
+ {f:'Intestino delgado × intestino grosso',b:'<b>Delgado</b>: completa a digestão e <b>absorve os nutrientes</b> (parede cheia de dobras, que <b>aumentam</b> a superfície). <b>Grosso</b>: absorve <b>água</b> e forma as <b>fezes</b>.'},
+ {f:'Salmonelose × botulismo',b:'<b>Salmonelose</b>: bactéria <i>Salmonella</i>, de ovo e frango crus ou malcozidos; dores abdominais e febre. <b>Botulismo</b>: <b>toxina</b> do <i>Clostridium botulinum</i>, de conservas (palmito, picles); náuseas, vômitos e visão turva.'},
+ {f:'Onde acontecem as trocas gasosas?',b:'Nos <b>alvéolos pulmonares</b>, envoltos por vasos finos — <b>nunca</b> na traqueia, que é só caminho do ar.'},
+ {f:'Inspiração × expiração',b:'<b>Inspiração</b>: os músculos se <b>contraem</b> e a caixa torácica <b>aumenta</b>. <b>Expiração</b>: eles <b>relaxam</b> e a caixa <b>diminui</b>.'},
+ {f:'Qual gás é usado pela célula?',b:'O gás <b>oxigênio</b> é usado para produzir <b>energia</b>. O gás <b>carbônico</b> é <b>resíduo</b> — sai pelos pulmões, na expiração.'},
+ {f:'Hemácia, leucócito ou plaqueta?',b:'<b>Hemácias</b> (glóbulos vermelhos) transportam o gás <b>oxigênio</b>. <b>Leucócitos</b> (glóbulos brancos) <b>defendem</b>. <b>Plaquetas</b> fazem a <b>coagulação</b>. O <b>plasma</b> é o líquido amarelado.'},
+ {f:'Átrio × ventrículo · artéria × veia · azul × vermelho',b:'<b>Átrio</b> recebe (parede fina); <b>ventrículo</b> impulsiona (parede grossa). <b>Artéria</b> sai do coração; <b>veia</b> volta e tem <b>valvas</b>. Nas ilustrações: <b>azul</b> = rico em gás carbônico; <b>vermelho</b> = rico em gás oxigênio.'},
+ {f:'Ureter × uretra · urina clara × escura',b:'<b>Ureteres</b> levam a urina do rim à <b>bexiga</b>; a <b>uretra</b> leva da bexiga para fora. Bebeu <b>muita</b> água: urina <b>clara</b>. Bebeu <b>pouca</b>: urina <b>amarelo-escura</b>.'}
+];
+
+/* ===================== MARÉ RÁPIDA ===================== */
+var RADAR=[
+ {f:'A nuvem é água no estado...',o:['líquido','gasoso'],a:0,e:'Nuvem = gotículas de água (líquido). O vapor é que é gasoso e invisível.'},
+ {f:'Gelo que derrete passa por...',o:['fusão','solidificação'],a:0,e:'Fusão: sólido → líquido, por aquecimento.'},
+ {f:'Água líquida que vira gelo passa por...',o:['fusão','solidificação'],a:1,e:'Solidificação: líquido → sólido, por resfriamento.'},
+ {f:'O orvalho na grama se forma por...',o:['condensação','evaporação'],a:0,e:'Condensação: o vapor esfria ao tocar a grama e vira líquido.'},
+ {f:'Vaporização rápida, com bolhas, é...',o:['evaporação','ebulição'],a:1,e:'A ebulição é rápida e faz bolhas; a evaporação é lenta.'},
+ {f:'As plantas devolvem água ao ar pela...',o:['transpiração','infiltração'],a:0,e:'Evaporação + transpiração das plantas = evapotranspiração.'},
+ {f:'A água da chuva que entra no solo faz a...',o:['infiltração','precipitação'],a:0,e:'Infiltração: a água entra no solo e forma reservatórios subterrâneos.'},
+ {f:'A energia do dia a dia vem dos...',o:['carboidratos','lipídeos'],a:0,e:'Carboidrato = energia. Lipídeo = reserva de energia.'},
+ {f:'9 kcal por grama é a marca do...',o:['carboidrato','lipídeo'],a:1,e:'Lipídeo: 9 kcal/g. Carboidrato e proteína: 4 kcal/g.'},
+ {f:'O ferro, de carnes e feijão, previne a...',o:['anemia','obesidade'],a:0,e:'O ferro previne a anemia. Cálcio e fósforo formam ossos e dentes.'},
+ {f:'A bile é produzida pelo...',o:['fígado','pâncreas'],a:0,e:'Bile = fígado. O pâncreas também libera substâncias no intestino delgado, mas a bile é do fígado.'},
+ {f:'A bile atua na digestão das...',o:['proteínas','gorduras'],a:1,e:'Bile = gorduras. As proteínas começam no estômago.'},
+ {f:'As proteínas começam a ser digeridas no...',o:['estômago','intestino grosso'],a:0,e:'A parede do estômago produz substâncias que começam a digerir as proteínas.'},
+ {f:'Os nutrientes são absorvidos no intestino...',o:['delgado','grosso'],a:0,e:'A absorção dos nutrientes é no intestino delgado, pelas células da parede.'},
+ {f:'A água e as fezes ficam por conta do intestino...',o:['delgado','grosso'],a:1,e:'No intestino grosso continua a absorção de água e se formam as fezes.'},
+ {f:'As dobras do intestino delgado servem para...',o:['aumentar a superfície','diminuir a superfície'],a:0,e:'Mais superfície de contato = absorção mais eficiente.'},
+ {f:'Ovo cru ou frango malcozido pode causar...',o:['salmonelose','botulismo'],a:0,e:'Salmonelose: bactéria Salmonella, com dores abdominais e febre.'},
+ {f:'Palmito de conserva artesanal: risco de...',o:['salmonelose','botulismo'],a:1,e:'Botulismo: toxina do Clostridium botulinum, comum em conservas vegetais.'},
+ {f:'As trocas gasosas acontecem...',o:['na traqueia','nos alvéolos'],a:1,e:'Nos alvéolos pulmonares, envoltos por vasos sanguíneos muito finos.'},
+ {f:'Na inspiração, a caixa torácica...',o:['aumenta de volume','diminui de volume'],a:0,e:'Na inspiração os músculos se contraem e a caixa torácica aumenta.'},
+ {f:'O músculo que separa o tórax do abdome é o...',o:['diafragma','esôfago'],a:0,e:'O diafragma fica abaixo dos pulmões e participa dos movimentos respiratórios.'},
+ {f:'A gripe é causada pelo vírus...',o:['influenza','Salmonella'],a:0,e:'Gripe = variações do vírus influenza, e há vacina. Salmonella é bactéria, do sistema digestório.'},
+ {f:'Quem transporta o gás oxigênio no sangue?',o:['glóbulos vermelhos','glóbulos brancos'],a:0,e:'As hemácias transportam o gás oxigênio. Os leucócitos defendem o organismo.'},
+ {f:'Quem atua na coagulação do sangue?',o:['plaquetas','plasma'],a:0,e:'As plaquetas atuam na coagulação. O plasma é o líquido amarelado.'},
+ {f:'Levam o sangue DO coração para o corpo:',o:['artérias','veias'],a:0,e:'Artérias saem do coração e se ramificam até formar os capilares.'},
+ {f:'Têm valvas e trazem o sangue de volta:',o:['artérias','veias'],a:1,e:'As veias levam o sangue de volta ao coração e têm valvas.'},
+ {f:'Recebem o sangue que as veias trazem:',o:['átrios','ventrículos'],a:0,e:'Átrio recebe (parede mais fina); ventrículo impulsiona (parede grossa).'},
+ {f:'Nas ilustrações, sangue rico em gás carbônico é...',o:['azul','vermelho'],a:0,e:'Azul = gás carbônico; vermelho = gás oxigênio. É só uma convenção das figuras.'},
+ {f:'Levam a urina do rim até a bexiga:',o:['ureteres','uretra'],a:0,e:'Ureteres: rim → bexiga. Uretra: bexiga → fora do corpo.'},
+ {f:'Bebeu pouca água: a urina fica...',o:['mais clara','mais escura'],a:1,e:'Com pouca água os rins retiram menos água do sangue: urina concentrada e amarelo-escura.'}
+];
+
+/* ===================== TREINO ===================== */
+var TREINO=[
+{em:'💧',fam:'Família 1 — A água e seus estados',qs:[
+ {n:'f',q:'Neve, granizo, geleiras, icebergs e banquisas são exemplos de água em qual estado?',o:['sólido','líquido','gasoso','nenhum: não são feitos de água'],a:0,e:'Todas essas formas são água no estado sólido. A banquisa é água do mar congelada.'},
+ {n:'f',q:'O vapor de água presente no ar que respiramos é...',o:['visível e está no estado líquido','invisível e está no estado gasoso','branco e está no estado sólido','colorido e está no estado líquido'],a:1,e:'O vapor de água é o estado gasoso e é invisível, como os outros gases do ar.'},
+ {n:'m',q:'Quando a água líquida é resfriada e se transforma em gelo, ocorre a...',o:['fusão','condensação','solidificação','evaporação'],a:2,e:'Solidificação é a passagem do líquido para o sólido, causada pelo resfriamento.'},
+ {n:'m',q:'Qual par está CORRETO?',o:['fusão: líquido → sólido','condensação: líquido → gasoso','evaporação: gasoso → líquido','fusão: sólido → líquido'],a:3,e:'Fusão é sólido → líquido (aquecendo). Condensação é gasoso → líquido e evaporação é líquido → gasoso.'},
+ {n:'p',q:'Um bloco enorme de gelo flutua no mar, perto de uma geleira. Segundo o livro, ele é...',o:['uma banquisa, que é água do mar congelada','um iceberg, pedaço que se desprendeu de uma geleira','uma nuvem no estado sólido','granizo formado dentro da nuvem'],a:1,e:'Icebergs são pedaços de gelo que se desprendem das geleiras. Banquisa é a água do mar congelada; granizo se forma nas nuvens.'}
+]},
+{em:'🌧️',fam:'Família 2 — O ciclo da água e sua importância',qs:[
+ {n:'f',q:'Como se formam as nuvens no ciclo da água?',o:['o vapor de água sobe, encontra camadas frias da atmosfera e se condensa','a chuva sobe de volta para o céu já pronta','o gelo dos rios evapora e vira nuvem sólida','as nuvens nascem dentro do solo'],a:0,e:'O vapor sobe, encontra camadas mais frias e se condensa, formando as nuvens.'},
+ {n:'f',q:'O ciclo da água também é chamado de...',o:['ciclo do carbono','efeito estufa','ciclo hidrológico','ciclo das rochas'],a:2,e:'Ciclo da água = ciclo hidrológico.'},
+ {n:'m',q:'O que são os chamados “rios voadores”?',o:['rios que mudam de lugar depois da chuva','grandes quantidades de vapor de água que viajam pela atmosfera','nuvens de granizo que caem nas montanhas','canais construídos para levar água às cidades'],a:1,e:'Os “rios voadores” são grandes quantidades de vapor de água que viajam pela atmosfera, ligando o ciclo da água ao clima.'},
+ {n:'m',q:'Na agricultura, a irrigação das plantações...',o:['não usa água doce','só usa água salgada do mar','substitui a chuva sem gastar água','consome muita água doce'],a:3,e:'A agricultura usa muita água doce na irrigação das plantações.'},
+ {n:'p',q:'O aquecimento global, provocado pela intensificação do efeito estufa, tende a causar...',o:['mais evaporação, derretimento das geleiras, secas e tempestades','o congelamento dos oceanos','o fim do ciclo da água','o aumento da quantidade total de água na natureza'],a:0,e:'O aquecimento global aumenta a evaporação e o derretimento das geleiras, provocando mais secas e tempestades. A quantidade total de água não muda.'}
+]},
+{em:'🍎',fam:'Família 3 — Alimentos, nutrientes e saúde',qs:[
+ {n:'f',q:'Óleos, azeites, abacate, castanhas e manteiga são alimentos ricos em...',o:['proteínas','vitaminas','lipídeos','sais minerais'],a:2,e:'São ricos em lipídeos, que servem de reserva de energia e ajudam a manter a temperatura do corpo.'},
+ {n:'f',q:'As vitaminas e os sais minerais são nutrientes com função...',o:['apenas energética','apenas de construção do corpo','de dar cor aos alimentos','reguladora das funções do corpo'],a:3,e:'Vitaminas e sais minerais são reguladores das funções do organismo.'},
+ {n:'m',q:'Por que a desidratação (secagem ou salga) conserva os alimentos?',o:['porque adiciona água ao alimento','porque retira a água, reduzindo a ação dos microrganismos','porque congela o alimento','porque aquece o alimento acima de 100 °C'],a:1,e:'Sem água, a atividade dos microrganismos que decompõem o alimento fica reduzida.'},
+ {n:'m',q:'Na conservação pelo frio, a refrigeração mantém o alimento entre...',o:['0 °C e 8 °C','10 °C e 20 °C','20 °C e 30 °C','sempre abaixo de 0 °C'],a:0,e:'Refrigeração: de 0 °C a 8 °C. Congelamento: abaixo de 0 °C.'},
+ {n:'p',q:'Quando uma pessoa ingere MENOS calorias do que gasta, a tendência é que ela...',o:['aumente a massa corporal','não mude nada','fique desidratada','emagreça'],a:3,e:'Ingerir menos calorias do que se gasta leva ao emagrecimento; ingerir mais aumenta a massa corporal.'}
+]},
+{em:'🍽️',fam:'Família 4 — Digestão: do prato ao sangue',qs:[
+ {n:'f',q:'Onde a digestão começa e onde ela termina?',o:['começa no estômago e termina no intestino delgado','começa na boca e termina no intestino grosso','começa no esôfago e termina no ânus','começa na faringe e termina no estômago'],a:1,e:'A digestão começa na boca e termina no intestino grosso, com a absorção de água e minerais.'},
+ {n:'f',q:'O bolo alimentar é...',o:['o alimento triturado pela mastigação e umedecido pela saliva','as fezes formadas no intestino grosso','o ar misturado com saliva que engolimos','a bile produzida pelo fígado'],a:0,e:'O bolo alimentar se forma na boca: alimento triturado pelos dentes + saliva.'},
+ {n:'m',q:'Na boca, a saliva atua principalmente na quebra de quais nutrientes?',o:['das proteínas','das gorduras','dos carboidratos','dos sais minerais'],a:2,e:'A saliva contém substâncias que atuam na quebra dos carboidratos — a digestão já começa na boca.'},
+ {n:'m',q:'Em que parte do corpo os nutrientes digeridos passam para o sangue?',o:['nas paredes do estômago','nos alvéolos pulmonares','nas células da parede do intestino delgado','nos rins'],a:2,e:'A absorção é feita pelas células da parede do intestino delgado, e os nutrientes passam para o sangue.'},
+ {n:'p',q:'Segundo o livro, como se previne a salmonelose?',o:['evitando locais pouco ventilados e com aglomeração','com cozimento adequado dos alimentos e lavando bem as mãos e os utensílios','tomando a vacina contra a gripe todos os anos','espirrando com o braço na frente da boca'],a:1,e:'A prevenção da salmonelose é pelo cozimento adequado e pela higiene das mãos e dos utensílios ao manipular ovos e frango cru. As outras opções previnem doenças respiratórias.'}
+]},
+{em:'🌬️',fam:'Família 5 — Respiração: do ar à energia',qs:[
+ {n:'f',q:'Qual é a ordem correta do caminho do ar?',o:['cavidades nasais → faringe → laringe → traqueia → brônquios → pulmões','cavidades nasais → traqueia → faringe → laringe → brônquios','boca → esôfago → estômago → pulmões','brônquios → traqueia → laringe → faringe → cavidades nasais'],a:0,e:'A faringe e a laringe vêm antes da traqueia. O esôfago é o caminho do alimento.'},
+ {n:'m',q:'Os pulmões têm textura esponjosa porque são formados por...',o:['músculos intercostais','alvéolos pulmonares, envoltos por vasos sanguíneos muito finos','capilares do intestino delgado','valvas, como as do coração'],a:1,e:'Os alvéolos são pequenos sacos arredondados envoltos por vasos finos; é neles que ocorrem as trocas gasosas.'},
+ {n:'m',q:'O músculo que fica abaixo dos pulmões e separa o tórax do abdome é o...',o:['esôfago','diafragma','pâncreas','brônquio'],a:1,e:'O diafragma separa o tórax do abdome e participa dos movimentos respiratórios junto com os músculos intercostais.'},
+ {n:'p',q:'Por que o aumento da arborização das cidades ajuda a combater as doenças respiratórias?',o:['porque as árvores produzem vacinas naturais','porque as árvores impedem a chuva','porque as árvores aumentam a poluição do ar','porque as árvores filtram partículas presentes no ar'],a:3,e:'As árvores filtram partículas do ar poluído — por isso o livro cita a arborização junto com o uso de combustíveis menos poluentes.'}
+]},
+{em:'❤️',fam:'Família 6 — Circulação e excreção',qs:[
+ {n:'f',q:'O sistema cardiovascular é formado por...',o:['sangue, coração e vasos sanguíneos','rins, ureteres, bexiga urinária e uretra','vias respiratórias e pulmões','tubo digestório e órgãos anexos'],a:0,e:'Sangue + coração + vasos sanguíneos = sistema cardiovascular, responsável pela circulação.'},
+ {n:'m',q:'O plasma do sangue é...',o:['a célula que transporta o gás oxigênio','um líquido amarelado, formado principalmente por água, com substâncias dissolvidas','o fragmento celular que faz a coagulação','a célula que defende o organismo'],a:1,e:'O plasma é o líquido amarelado do sangue, feito principalmente de água, com nutrientes e gás carbônico dissolvidos.'},
+ {n:'m',q:'Qual característica dos capilares permite que os nutrientes passem para a circulação?',o:['eles têm paredes grossas','eles têm valvas','eles têm paredes finas','eles saem diretamente do coração'],a:2,e:'Os capilares são os vasos mais finos e têm paredes finas, o que permite a passagem de substâncias.'},
+ {n:'p',q:'Na filtração feita pelos rins, o que é retirado do sangue?',o:['os glóbulos vermelhos e os glóbulos brancos','os nutrientes absorvidos no intestino delgado','o gás carbônico, que vira urina','sais minerais, água em excesso e resíduos tóxicos, como a ureia'],a:3,e:'Tudo isso se combina e forma a urina. O gás carbônico sai pelos pulmões, na expiração.'}
+]}
+];
+
+/* ===================== SIMULADO ===================== */
+var SIMULADO=[
+ {q:'A água que forma as nuvens está no estado...',o:['gasoso, pois a nuvem é vapor de água','líquido, pois a nuvem é feita de pequenas gotículas de água','sólido, pois a nuvem é feita de gelo','nenhum: a nuvem não contém água'],a:1,e:'As nuvens são formadas por pequenas gotículas de água — estado líquido. O vapor de água é gasoso e invisível.'},
+ {q:'A passagem da água do estado sólido para o líquido, por aquecimento, chama-se...',o:['solidificação','condensação','fusão','evaporação'],a:2,e:'Fusão: sólido → líquido, causada pelo aquecimento (o gelo derrete).'},
+ {q:'O que acontece na respiração celular?',o:['dentro das células, o gás oxigênio é usado para transformar os nutrientes em energia, produzindo também gás carbônico','nos pulmões, o ar entra e sai pelos movimentos respiratórios','no intestino delgado, os nutrientes passam para o sangue','nos rins, o sangue é filtrado e a urina é formada'],a:0,e:'A respiração celular ocorre dentro das células. A entrada e a saída de ar dos pulmões é a respiração pulmonar (ventilação).'},
+ {q:'A evapotranspiração é...',o:['apenas a evaporação da água dos oceanos','apenas a formação das nuvens na atmosfera','apenas a transpiração dos animais das florestas','a evaporação da água do ambiente somada à transpiração dos seres vivos, principalmente das plantas'],a:3,e:'Evapotranspiração = evaporação do ambiente + transpiração dos seres vivos, principalmente as plantas.'},
+ {q:'Sobre a quantidade total de água na natureza durante o ciclo, é correto dizer que ela...',o:['aumenta um pouco a cada chuva','não varia — a água apenas muda de estado físico','diminui a cada evaporação','desaparece quando vira vapor'],a:1,e:'A quantidade total de água na natureza não muda: ela só passa de um estado físico para outro, de forma cíclica.'},
+ {q:'O desmatamento de uma região tende a...',o:['aumentar as chuvas, porque o solo fica mais quente','não ter nenhuma relação com as chuvas','reduzir as chuvas, porque diminui a transpiração das plantas','fazer a água dos oceanos secar'],a:2,e:'As plantas devolvem água ao ar pela transpiração; sem elas, o volume de chuvas cai.'},
+ {q:'As mudanças climáticas têm como causa principal...',o:['a intensificação do efeito estufa, pelo aumento de gases como o gás carbônico e o metano','a diminuição do número de nuvens','o congelamento dos oceanos','o excesso de chuvas nos desertos'],a:0,e:'O aumento dos gases do efeito estufa intensifica o fenômeno e provoca o aquecimento global.'},
+ {q:'Entre os nutrientes, o que fornece mais energia por grama (9 kcal/g) é o...',o:['carboidrato','sal mineral','a vitamina','lipídeo'],a:3,e:'Os lipídeos fornecem 9 kcal/g; carboidratos e proteínas fornecem 4 kcal/g.'},
+ {q:'O cálcio e o fósforo, encontrados nos derivados do leite, participam da formação de...',o:['cabelos apenas','ossos e dentes','nuvens','músculos apenas'],a:1,e:'O cálcio e o fósforo participam da composição de ossos e dentes.'},
+ {q:'A pasteurização e a ultrapasteurização, muito usadas no leite, são formas de conservação...',o:['pelo frio','por desidratação','pelo calor','por congelamento'],a:2,e:'São conservação pelo calor: o alimento é aquecido para matar microrganismos.'},
+ {q:'É possível uma pessoa obesa também estar desnutrida?',o:['sim, se ela comer alimentos muito calóricos, mas pobres em nutrientes','não, quem é obeso nunca fica desnutrido','não, porque desnutrição só existe em quem é muito magro','sim, mas só se ela parar de beber água'],a:0,e:'A desnutrição ocorre quando faltam nutrientes — o que pode acontecer mesmo em quem consome muitas calorias.'},
+ {q:'Assinale a alternativa em que estão listadas SOMENTE estruturas do tubo digestório.',o:['boca, intestino grosso, glândulas salivares e traqueia','estômago, pulmão, esôfago e narinas','brônquios, laringe, estômago e pâncreas','esôfago, estômago, intestino delgado e intestino grosso'],a:3,e:'Glândulas salivares e pâncreas são órgãos anexos; traqueia, narinas, pulmão, brônquios e laringe são do sistema respiratório.'},
+ {q:'Observando um coração, uma estudante viu quatro cavidades. Qual descrição está correta?',o:['os ventrículos ficam em cima e recebem o sangue trazido pelas veias','os átrios ficam em cima, têm paredes mais finas e recebem o sangue das veias; os ventrículos ficam embaixo, têm paredes grossas e impulsionam o sangue pelas artérias','são quatro átrios, todos com a mesma função de receber o sangue','são duas cavidades cheias de alvéolos e duas cheias de capilares'],a:1,e:'Átrio recebe (parede mais fina, em cima); ventrículo impulsiona (parede grossa, embaixo). Os alvéolos ficam nos pulmões.'},
+ {q:'Uma criança de 9 anos tem alguns dentes de leite e alguns dentes permanentes. Como se chama essa dentição?',o:['dentição decídua','dentição permanente','dentição mista','dentição peristáltica'],a:2,e:'A troca começa por volta dos 7 anos; enquanto os dois tipos convivem, a dentição é mista.'},
+ {q:'Qual é o objetivo da manobra de Heimlich?',o:['replicar o movimento do diafragma, forçando a saída do ar para desobstruir as vias aéreas','fazer a pessoa engasgada engolir o alimento mais rápido','aumentar os batimentos do coração da pessoa','empurrar o alimento preso para dentro do estômago'],a:0,e:'A manobra comprime o abdome para forçar a saída do ar e desobstruir as vias aéreas. Se não houver reação, chame o SAMU (192) ou os bombeiros (193).'},
+ {q:'A parede interna do intestino delgado é repleta de pequenas dobras. Para que elas servem?',o:['para impedir que o alimento volte para o estômago','para produzir a bile dentro do intestino','para formar as fezes mais rapidamente','para aumentar a superfície em contato com os nutrientes, tornando a absorção mais eficiente'],a:3,e:'Mais superfície de contato significa absorção mais eficiente. A bile é produzida pelo fígado e as fezes se formam no intestino grosso.'},
+ {q:'Alguém comeu palmito de uma conserva artesanal e passou a ter náuseas, vômitos e visão turva. De qual doença o livro fala?',o:['botulismo, causado pela toxina da bactéria Clostridium botulinum','salmonelose, causada pela bactéria Salmonella','gripe, causada pelo vírus influenza','anemia, causada pela redução dos glóbulos vermelhos'],a:0,e:'As conservas vegetais artesanais, como palmito e picles, são o alimento mais comumente envolvido no botulismo.'},
+ {q:'O que acontece com os músculos intercostais, o diafragma e a caixa torácica durante a INSPIRAÇÃO?',o:['os músculos relaxam e a caixa torácica diminui de volume','os músculos se contraem e a caixa torácica aumenta de volume','os músculos não se mexem: só os pulmões trabalham','os músculos empurram o alimento pelo tubo digestório'],a:1,e:'Na inspiração eles se contraem e a caixa torácica aumenta; na expiração eles relaxam e ela diminui.'},
+ {q:'A anemia reduz a quantidade de glóbulos vermelhos no sangue e um dos sintomas é o cansaço. Isso ocorre porque as hemácias...',o:['são responsáveis pela defesa do organismo contra agentes estranhos','participam da coagulação do sangue','transportam o gás oxigênio, e com menos delas a produção de energia no corpo fica prejudicada','transportam o gás carbônico, que é utilizado pelas células para produzir energia'],a:2,e:'Quem defende é o glóbulo branco e quem coagula é a plaqueta. O gás carbônico é resíduo, não é usado para produzir energia.'},
+ {q:'Depois de um dia inteiro bebendo muito pouca água, a urina fica amarelo-escura. Por quê?',o:['porque os rins param de filtrar o sangue','porque a bexiga urinária diminui de volume','porque a urina se mistura com as fezes no intestino grosso','porque, com pouca água, os rins retiram menos água do sangue e produzem uma urina mais concentrada'],a:3,e:'Urina clara = bebeu bastante água (mais diluída); urina escura = bebeu pouca (mais concentrada).'}
+];
+
+/* ===================== NAVEGAÇÃO ===================== */
+function aba(id,btn){
+  var s=document.querySelectorAll('section');
+  for(var i=0;i<s.length;i++)s[i].classList.remove('on');
+  document.getElementById(id).classList.add('on');
+  var b=document.querySelectorAll('nav button');
+  for(var j=0;j<b.length;j++)b[j].classList.remove('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===================== RENDER GENÉRICO DE QUESTÃO ===================== */
+var LET=['A','B','C','D'];
+function htmlQuestao(pre,i,q){
+  var opts='';
+  for(var k=0;k<q.o.length;k++){
+    opts+='<button class="opt" id="'+pre+'_o'+i+'_'+k+'" onclick="responder(\''+pre+'\','+i+','+k+')">'+
+          '<span class="letra">'+LET[k]+')</span> '+q.o[k]+'</button>';
+  }
+  return '<div class="q" id="'+pre+'_q'+i+'">'+
+         '<div class="enun">'+(i+1)+') '+q.q+'</div>'+
+         '<div class="opts">'+opts+'</div>'+
+         '<div id="'+pre+'_fb'+i+'"></div></div>';
+}
+var BANCOS={};
+function responder(pre,i,k){
+  var q=BANCOS[pre][i];
+  var cx=document.getElementById(pre+'_q'+i);
+  if(cx.dataset.feito)return;
+  cx.dataset.feito='1';
+  for(var z=0;z<q.o.length;z++){
+    var b=document.getElementById(pre+'_o'+i+'_'+z);
+    b.disabled=true;
+    if(z===q.a)b.classList.add('certa');
+  }
+  var ok=(k===q.a);
+  if(!ok)document.getElementById(pre+'_o'+i+'_'+k).classList.add('errada');
+  var fb=document.getElementById(pre+'_fb'+i);
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML=(ok?'✅ Isso! ':'❌ Quase! ')+q.e;
+  mem[pre+'_'+i]={k:k,ok:ok};
+  salvar();
+  if(pre==='termo')termoCheck();
+  if(pre.indexOf('tr')===0)treinoCheck();
+}
+
+/* ===================== TERMÔMETRO ===================== */
+function montarTermo(){
+  BANCOS['termo']=TERMO;
+  var h='';
+  for(var i=0;i<TERMO.length;i++)h+=htmlQuestao('termo',i,TERMO[i]);
+  h+='<div class="center" style="margin-top:16px"><button class="btn sol" onclick="termoResultado()">🌡️ Ver a medição da maré</button></div>';
+  document.getElementById('termoBox').innerHTML=h;
+  for(var j=0;j<TERMO.length;j++){
+    var s=mem['termo_'+j];
+    if(s)responderRestaurado('termo',j,s.k);
+  }
+  termoCheck();
+}
+function responderRestaurado(pre,i,k){
+  var q=BANCOS[pre][i];
+  var cx=document.getElementById(pre+'_q'+i);
+  if(!cx||cx.dataset.feito)return;
+  cx.dataset.feito='1';
+  for(var z=0;z<q.o.length;z++){
+    var b=document.getElementById(pre+'_o'+i+'_'+z);
+    b.disabled=true;
+    if(z===q.a)b.classList.add('certa');
+  }
+  var ok=(k===q.a);
+  if(!ok)document.getElementById(pre+'_o'+i+'_'+k).classList.add('errada');
+  var fb=document.getElementById(pre+'_fb'+i);
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML=(ok?'✅ Isso! ':'❌ Quase! ')+q.e;
+}
+function termoCheck(){
+  var n=0;
+  for(var i=0;i<TERMO.length;i++)if(mem['termo_'+i])n++;
+  if(n===TERMO.length)termoResultado(true);
+}
+function termoResultado(auto){
+  var falta=[],fracos=[],fortes=[];
+  for(var i=0;i<TERMO.length;i++){
+    var s=mem['termo_'+i];
+    if(!s){falta.push(i+1);continue;}
+    var nome=nomeAssunto(TERMO[i].as);
+    if(s.ok)fortes.push(nome);else fracos.push(nome);
+  }
+  var box=document.getElementById('termoRes');
+  box.classList.add('on');
+  if(falta.length&&!auto){
+    box.innerHTML='<h2>🌡️ Falta responder</h2><p>Ainda faltam as questões: <b>'+falta.join(', ')+'</b>. Responda todas para eu fechar a medição!</p>';
+    return;
+  }
+  if(falta.length)return;
+  var h='<h2>🏝️ A medição da maré</h2>';
+  h+='<p>Você acertou <b>'+fortes.length+' de '+TERMO.length+'</b> assuntos.</p>';
+  h+='<div class="barra"><div style="width:'+Math.round(fortes.length/TERMO.length*100)+'%"></div></div>';
+  if(fracos.length){
+    h+='<h3>⚠️ Comece por estes — aqui a maré está subindo</h3>';
+    for(var f=0;f<fracos.length;f++)h+='<div class="termo-linha"><span class="nome">'+fracos[f]+'</span><span class="tag at">estudar primeiro</span></div>';
+    h+='<p style="margin-top:12px"><b>Seu caminho de hoje:</b> abra a aba <b>🥥 Guia da Ilha</b> e leia primeiro as pílulas marcadas com ⚠️. Depois vá ao <b>🦀 Alerta</b>, ao <b>🎯 Treino</b> e termine na <b>🏁 Travessia Final</b>.</p>';
+  } else {
+    h+='<div class="fb ok"><b>Maré calma em todos os assuntos!</b> 🌞 Você acertou os '+TERMO.length+'. Então hoje o melhor é treinar: vá direto ao <b>🦀 Alerta</b> (as pegadinhas derrubam quem sabe a matéria) e depois à <b>🏁 Travessia Final</b>.</div>';
+  }
+  if(fortes.length){
+    h+='<h3>🌞 Já está firme nestes</h3>';
+    for(var g=0;g<fortes.length;g++)h+='<div class="termo-linha"><span class="nome">'+fortes[g]+'</span><span class="tag ok">só dar uma olhada</span></div>';
+  }
+  box.innerHTML=h;
+  mem.termo_fracos=fracos;
+  salvar();
+  montarGuia();
+}
+function nomeAssunto(id){
+  for(var i=0;i<ASSUNTOS.length;i++)if(ASSUNTOS[i].id===id)return ASSUNTOS[i].nome;
+  return id;
+}
+
+/* ===================== GUIA ===================== */
+function montarGuia(){
+  var fracos=mem.termo_fracos||[];
+  var h='';
+  for(var i=0;i<GUIA.length;i++){
+    var p=GUIA[i];
+    if(p.g){h+='<div class="grupo">'+p.g+'</div>';continue;}
+    var alerta=(p.as&&fracos.indexOf(nomeAssunto(p.as))>=0);
+    h+='<div class="pill card"'+(alerta?' style="border-color:#EF6B55"':'')+'>'+
+       '<div class="tema">'+p.em+' '+p.t+(alerta?' <span class="tag at">⚠️ estude primeiro</span>':'')+'</div>'+
+       '<div class="regra">'+p.r+'</div>'+
+       '<div class="ex">📌 <b>Exemplos:</b> '+p.ex+'</div>'+
+       '<div class="prova">🎯 <b>Como costuma cair na prova:</b> '+p.p+'</div>'+
+       '</div>';
+  }
+  document.getElementById('guiaBox').innerHTML=h;
+}
+
+/* ===================== ALERTA (flip) ===================== */
+function montarFlip(){
+  var h='';
+  for(var i=0;i<PEGADINHAS.length;i++){
+    h+='<div class="flip" onclick="this.classList.toggle(\'v\')">'+
+       '<div class="in"><div class="f">⚠️ '+PEGADINHAS[i].f+'<small>clique para virar</small></div>'+
+       '<div class="b">'+PEGADINHAS[i].b+'</div></div></div>';
+  }
+  document.getElementById('flipBox').innerHTML=h;
+}
+
+/* ===================== MARÉ RÁPIDA ===================== */
+var RODADAS=12;
+var rOrdem=[],rPos=0,rAcertos=0;
+function radarStart(){
+  var todos=[];
+  for(var i=0;i<RADAR.length;i++)todos.push(i);
+  for(var j=todos.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=todos[j];todos[j]=todos[k];todos[k]=t;}
+  rOrdem=todos.slice(0,Math.min(RODADAS,todos.length));
+  rPos=0;rAcertos=0;
+  radarMostrar();
+}
+function radarMostrar(){
+  var box=document.getElementById('radarBox');
+  var tot=rOrdem.length;
+  if(rPos>=tot){
+    var msg=(rAcertos===tot)?'🏆 '+tot+' de '+tot+'! Maré limpa!':
+            (rAcertos>=tot-2)?'👏 Quase tudo! Jogue mais uma vez para fechar.':
+            '💪 Vale jogar de novo — as perguntas mudam e o cérebro aprende com a repetição.';
+    box.innerHTML='<div class="fb ok"><b>Rodada terminada:</b> '+rAcertos+' de '+tot+' certas.<br>'+msg+'</div>';
+    document.getElementById('radarPlacar').textContent='';
+    var melhor=mem.radar_melhor||0;
+    if(rAcertos>melhor){mem.radar_melhor=rAcertos;salvar();}
+    return;
+  }
+  var it=RADAR[rOrdem[rPos]];
+  var ops='';
+  for(var k=0;k<it.o.length;k++)ops+='<button class="btn ghost" onclick="radarResp('+k+')">'+it.o[k]+'</button>';
+  box.innerHTML='<div class="frase">'+it.f+'</div><div class="escolhas">'+ops+'</div><div id="radarFb"></div>';
+  document.getElementById('radarPlacar').textContent='Rodada '+(rPos+1)+' de '+tot+' · acertos: '+rAcertos;
+}
+function radarResp(k){
+  var it=RADAR[rOrdem[rPos]];
+  var ok=(k===it.a);
+  if(ok)rAcertos++;
+  var fb=document.getElementById('radarFb');
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML=(ok?'✅ Certo! ':'❌ A certa era <b>'+it.o[it.a]+'</b>. ')+it.e;
+  var bts=document.querySelectorAll('#radarBox .escolhas button');
+  for(var i=0;i<bts.length;i++)bts[i].disabled=true;
+  rPos++;
+  setTimeout(radarMostrar,1800);
+}
+
+/* ===================== TREINO ===================== */
+function montarTreino(){
+  var h='';
+  for(var f=0;f<TREINO.length;f++){
+    var fam=TREINO[f];
+    var pre='tr'+f;
+    BANCOS[pre]=fam.qs;
+    h+='<div class="card"><h2>'+fam.em+' '+fam.fam+'</h2><div id="'+pre+'Box"></div>'+
+       '<div class="placar" id="'+pre+'Placar"></div></div>';
+  }
+  document.getElementById('treinoBox').innerHTML=h;
+  for(var g=0;g<TREINO.length;g++){
+    var p2='tr'+g, hh='';
+    for(var i=0;i<TREINO[g].qs.length;i++){
+      var q=TREINO[g].qs[i];
+      hh+=htmlQuestao(p2,i,q).replace('</div><div class="opts">',
+          ' <span class="nivel '+q.n+'">'+(q.n==='f'?'fácil':q.n==='m'?'médio':'nível prova')+'</span></div><div class="opts">');
+    }
+    document.getElementById(p2+'Box').innerHTML=hh;
+    for(var r=0;r<TREINO[g].qs.length;r++){
+      var s=mem[p2+'_'+r];
+      if(s)responderRestaurado(p2,r,s.k);
+    }
+  }
+  treinoCheck();
+}
+function treinoCheck(){
+  for(var f=0;f<TREINO.length;f++){
+    var pre='tr'+f,tot=TREINO[f].qs.length,fez=0,ac=0;
+    for(var i=0;i<tot;i++){var s=mem[pre+'_'+i];if(s){fez++;if(s.ok)ac++;}}
+    var el=document.getElementById(pre+'Placar');
+    if(el)el.textContent=fez?('Respondidas: '+fez+'/'+tot+' · acertos: '+ac):'';
+  }
+}
+
+/* ===================== SIMULADO ===================== */
+var simEscolhas={};
+function montarSim(){
+  var h='';
+  for(var i=0;i<SIMULADO.length;i++){
+    var q=SIMULADO[i],ops='';
+    for(var k=0;k<q.o.length;k++){
+      ops+='<button class="opt" id="sim_o'+i+'_'+k+'" onclick="simMarcar('+i+','+k+')">'+
+           '<span class="letra">'+LET[k]+')</span> '+q.o[k]+'</button>';
+    }
+    h+='<div class="q" id="sim_q'+i+'"><div class="enun">'+(i+1)+') '+q.q+'</div>'+
+       '<div class="opts">'+ops+'</div><div id="sim_fb'+i+'"></div></div>';
+  }
+  document.getElementById('simBox').innerHTML=h;
+  var sv=mem.sim_escolhas;
+  if(sv){simEscolhas=sv;for(var j in simEscolhas)marcarVisual(parseInt(j,10),simEscolhas[j]);}
+  if(mem.sim_enviado)simMostrarGabarito();
+}
+function marcarVisual(i,k){
+  for(var z=0;z<SIMULADO[i].o.length;z++){
+    var b=document.getElementById('sim_o'+i+'_'+z);
+    if(b)b.style.borderColor=(z===k)?'#1591A6':'';
+    if(b)b.style.background=(z===k)?'#E4F5F8':'';
+  }
+}
+function simMarcar(i,k){
+  if(mem.sim_enviado)return;
+  simEscolhas[i]=k;
+  mem.sim_escolhas=simEscolhas;
+  salvar();
+  marcarVisual(i,k);
+}
+function simEnviar(){
+  var falta=[];
+  for(var i=0;i<SIMULADO.length;i++)if(simEscolhas[i]===undefined)falta.push(i+1);
+  var box=document.getElementById('simRes');
+  box.classList.add('on');
+  if(falta.length){
+    box.innerHTML='<h2>🏁 Ainda falta marcar</h2><p>Faltam as questões: <b>'+falta.join(', ')+'</b>. Marque todas antes de enviar.</p>';
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+    return;
+  }
+  mem.sim_enviado=1;
+  salvar();
+  simMostrarGabarito();
+}
+function simMostrarGabarito(){
+  var ac=0;
+  for(var i=0;i<SIMULADO.length;i++){
+    var q=SIMULADO[i],esc=simEscolhas[i];
+    for(var z=0;z<q.o.length;z++){
+      var b=document.getElementById('sim_o'+i+'_'+z);
+      if(!b)continue;
+      b.disabled=true;b.style.borderColor='';b.style.background='';
+      if(z===q.a)b.classList.add('certa');
+      if(z===esc&&esc!==q.a)b.classList.add('errada');
+    }
+    var ok=(esc===q.a);
+    if(ok)ac++;
+    var fb=document.getElementById('sim_fb'+i);
+    if(fb){fb.className='fb '+(ok?'ok':'no');
+      fb.innerHTML=(ok?'✅ Certa! ':'❌ A resposta certa é <b>'+LET[q.a]+')</b> '+q.o[q.a]+'. ')+q.e;}
+  }
+  mem.sim_acertos=ac;salvar();
+  var pc=Math.round(ac/SIMULADO.length*100);
+  var rec=(pc>=90)?'🌞 Travessia completa! Você está pronta para a recuperação. Antes de dormir, só vire os cartões do Alerta uma vez.':
+          (pc>=70)?'⛅ Chegou do outro lado com alguma água no barco. Volte ao Guia da Ilha nos assuntos que errou aqui e jogue a Maré Rápida de novo.':
+          (pc>=50)?'🌥️ A maré ainda puxa. Releia as pílulas dos assuntos errados e refaça o Treino dessas famílias.':
+          '🌧️ Calma, dá tempo. Escolha os 4 assuntos que você mais errou, leia só as pílulas deles e jogue a Maré Rápida duas vezes.';
+  var box=document.getElementById('simRes');
+  box.innerHTML='<h2>🏁 Seu resultado</h2><p style="font-size:1.3rem"><b>'+ac+' de '+SIMULADO.length+'</b> ('+pc+'%)</p>'+
+    '<div class="barra"><div style="width:'+pc+'%"></div></div><div class="fb ok">'+rec+'</div>'+
+    '<p class="aviso">O gabarito comentado de cada questão está acima, junto da pergunta.</p>';
+  document.getElementById('simBtn').style.display='none';
+  window.scrollTo({top:document.getElementById('simRes').offsetTop-40,behavior:'smooth'});
+}
+
+/* ===================== RELATÓRIO DOS PAIS ===================== */
+function verRelatorio(){
+  var cod=(document.getElementById('codPais').value||'').trim().toUpperCase();
+  var box=document.getElementById('relBox');
+  if(cod!=='PAIS-77'){
+    box.innerHTML='<div class="fb no">Código incorreto. Peça o código a quem montou o kit.</div>';
+    return;
+  }
+  var tFez=0,tAc=0;
+  for(var i=0;i<TERMO.length;i++){var s=mem['termo_'+i];if(s){tFez++;if(s.ok)tAc++;}}
+  var h='<div class="fb ok"><b>Relatório liberado.</b></div><table><tr><th>Parte</th><th>Situação</th></tr>';
+  h+='<tr><td>🌡️ Termômetro</td><td>'+(tFez?tAc+' de '+tFez+' respondidas corretas'+(tFez<TERMO.length?' (incompleto: '+tFez+'/'+TERMO.length+')':''):'não começou')+'</td></tr>';
+  var fr=mem.termo_fracos;
+  h+='<tr><td>⚠️ Assuntos a reforçar</td><td>'+(fr&&fr.length?fr.join(' · '):(fr?'nenhum — acertou todos':'depende do Termômetro'))+'</td></tr>';
+  h+='<tr><td>🌊 Maré Rápida</td><td>'+(mem.radar_melhor!==undefined?'melhor rodada: '+mem.radar_melhor+' de '+RODADAS:'não jogou')+'</td></tr>';
+  for(var f=0;f<TREINO.length;f++){
+    var pre='tr'+f,tot=TREINO[f].qs.length,fez=0,ac=0;
+    for(var j=0;j<tot;j++){var s2=mem[pre+'_'+j];if(s2){fez++;if(s2.ok)ac++;}}
+    h+='<tr><td>🎯 Treino: '+TREINO[f].fam+'</td><td>'+(fez?ac+' certas de '+fez+' feitas (de '+tot+')':'não fez')+'</td></tr>';
+  }
+  h+='<tr><td>🏁 Travessia Final</td><td>'+(mem.sim_enviado?mem.sim_acertos+' de '+SIMULADO.length+' ('+Math.round(mem.sim_acertos/SIMULADO.length*100)+'%)':'não enviou')+'</td></tr>';
+  h+='</table><p class="aviso" style="margin-top:10px">Dica para a véspera: priorize os assuntos da linha “a reforçar” e refaça a Maré Rápida — são os erros que mais custam nota.</p>';
+  box.innerHTML=h;
+}
+
+/* ===================== INICIAR ===================== */
+montarTermo();
+montarGuia();
+montarFlip();
+montarTreino();
+montarSim();
+radarStart();
+</script>
+</body>
+</html>
